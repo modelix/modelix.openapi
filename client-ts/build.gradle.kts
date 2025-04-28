@@ -9,8 +9,6 @@ plugins {
     alias(libs.plugins.node)
 }
 
-val packageOutputDir = layout.buildDirectory.dir("packages") // Output for .tgz files
-
 val publishAllClients by tasks.registering {
     group = "publishing"
 }
@@ -28,16 +26,16 @@ fun registerNpmPackageTasks(
     val publicationFile = clientBuildDir.map { it.file("modelix-${npmPackageName}-${project.version}.tgz") }
 
     val generatorTask = tasks.register("generateTypescript$clientType", GenerateTask::class) {
+        dependsOn(":redocly:npm_run_join")
         group = "openapi tools"
-        inputSpecRootDirectory = rootProject.layout.projectDirectory.dir("specifications").asFile.absolutePath
-        inputSpecRootDirectorySkipMerge = false
+        inputSpec = project(":redocly").layout.buildDirectory.file("joined.yaml").get().asFile.absolutePath
         configOptions = mapOf(
             "npmRepository" to "https://artifacts.itemis.cloud/repository/npm-open/",
             "npmVersion" to project.version.toString(),
             "npmName" to "@modelix/$npmPackageName",
         )
         gitUserId = "modelix"
-        gitRepoId = "modelix.api-specifications"
+        gitRepoId = "modelix.openapi"
         generatorName = openApiGeneratorName
         outputDir = layout.buildDirectory.dir("generate/$openApiGeneratorName").get().asFile.absolutePath
     }

@@ -90,58 +90,54 @@ components:
   schemas:
     MavenConnectorConfig:
       type: object
+      required: [repositories, artifacts]
       properties:
         repositories:
           type: array
-          required: true
           items:
             $ref: '#/components/schemas/MavenRepository'
         artifacts:
           type: array
-          required: true
           items:
             $ref: '#/components/schemas/MavenArtifact'
     MavenRepositoryList:
       type: object
+      required: [repositories]
       properties:
         repositories:
           type: array
-          required: true
           items:
             $ref: '#/components/schemas/MavenRepository'
     MavenRepository:
       type: object
+      required: [id, url]
       properties:
         id:
           type: string
-          required: true
           nullable: false
         url:
           type: string
-          required: true
           nullable: false
     MavenArtifactList:
       type: object
+      required: [artifacts]
       properties:
         artifacts:
           type: array
-          required: true
           items:
             $ref: '#/components/schemas/MavenArtifact'
     MavenArtifact:
       type: object
+      required: [groupId, artifactId]
       properties:
         groupId:
           type: string
-          required: true
           nullable: false
         artifactId:
           type: string
-          required: true
           nullable: false
         version:
           type: string
-          required: false
           nullable: true
 
   securitySchemes:

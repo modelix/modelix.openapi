@@ -1,3 +1,4 @@
+import ch.acanda.gradle.fabrikt.FabriktGenerateTask
 
 plugins {
     kotlin("jvm")
@@ -12,16 +13,9 @@ dependencies {
     implementation(libs.ktor.server.data.conversion)
 }
 
-tasks.processResources {
-    dependsOn(tasks.fabriktGenerate)
-}
-tasks.compileKotlin {
-    dependsOn(tasks.fabriktGenerate)
-}
-
 fabrikt {
     generate("modelix") {
-        apiFile = file("specifications/workspace-manager.yaml")
+        apiFile = project(":redocly").layout.buildDirectory.file("joined.yaml")
         basePackage = "org.modelix.service.workspaces"
         validationLibrary = NoValidation
         model {
@@ -41,8 +35,19 @@ fabrikt {
     }
 }
 
+tasks.withType<FabriktGenerateTask> {
+    dependsOn(":redocly:npm_run_join")
+}
+
 val generatedKotlinSrc = project.layout.buildDirectory.dir("generated/sources/fabrikt/src/main/kotlin")
 sourceSets["main"].resources.srcDir(generatedKotlinSrc)
+
+tasks.processResources {
+    dependsOn(tasks.fabriktGenerate)
+}
+tasks.compileKotlin {
+    dependsOn(tasks.fabriktGenerate)
+}
 
 java {
     withSourcesJar()

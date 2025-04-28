@@ -1,8 +1,11 @@
+
+
 plugins {
     base
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.gitVersion)
+    //alias(libs.plugins.node)
     `maven-publish`
 }
 

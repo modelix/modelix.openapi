@@ -1,5 +1,6 @@
 
 rootProject.name = "modelix.openapi"
 
-include("server-stubs-ktor")
+include("redocly")
 include("client-ts")
+include("server-stubs-ktor")

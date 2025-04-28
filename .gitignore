@@ -6,3 +6,4 @@ build
 
 /specifications/merged.yaml
 /version.txt
+node_modules
