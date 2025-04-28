@@ -51,7 +51,7 @@ tasks.compileKotlin {
     dependsOn(tasks.fabriktGenerate)
 }
 
-tasks.kotlinSourcesJar {
+tasks.named("sourcesJar") {
     dependsOn(tasks.fabriktGenerate)
 }
 
