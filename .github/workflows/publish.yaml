@@ -1,0 +1,45 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    name: Build and Publish
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://artifacts.itemis.cloud/repository/npm-open/'
+          scope: '<@modelix>'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Use tag as version
+        run: echo "${GITHUB_REF#refs/*/}" > version.txt
+
+      - name: Build and Publish
+        run: |-
+          ./gradlew publish \
+          -Partifacts.itemis.cloud.user=${{ secrets.ARTIFACTS_ITEMIS_CLOUD_USER }} \
+          -Partifacts.itemis.cloud.pw=${{ secrets.ARTIFACTS_ITEMIS_CLOUD_PW }} \
+          -Partifacts.itemis.cloud.npm.token=${{ secrets.ARTIFACTS_ITEMIS_CLOUD_NPM_TOKEN }}
