@@ -44,19 +44,6 @@ sourceSets.main {
     kotlin.srcDir(generatedKotlinSrc)
 }
 
-tasks.processResources {
-    dependsOn(tasks.fabriktGenerate)
-}
-tasks.compileKotlin {
-    dependsOn(tasks.fabriktGenerate)
-}
-
-afterEvaluate {
-    tasks.named("sourcesJar") {
-        dependsOn(tasks.fabriktGenerate)
-    }
-}
-
 java {
     withSourcesJar()
 }
@@ -74,4 +61,15 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+tasks.processResources {
+    dependsOn(tasks.fabriktGenerate)
+}
+tasks.compileKotlin {
+    dependsOn(tasks.fabriktGenerate)
+}
+
+tasks.named("sourcesJar") {
+    dependsOn(tasks.fabriktGenerate)
 }
