@@ -51,8 +51,10 @@ tasks.compileKotlin {
     dependsOn(tasks.fabriktGenerate)
 }
 
-tasks.named("sourcesJar") {
-    dependsOn(tasks.fabriktGenerate)
+afterEvaluate {
+    tasks.named("sourcesJar") {
+        dependsOn(tasks.fabriktGenerate)
+    }
 }
 
 java {
