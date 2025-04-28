@@ -40,7 +40,9 @@ tasks.withType<FabriktGenerateTask> {
 }
 
 val generatedKotlinSrc = project.layout.buildDirectory.dir("generated/sources/fabrikt/src/main/kotlin")
-sourceSets["main"].resources.srcDir(generatedKotlinSrc)
+sourceSets.main {
+    kotlin.srcDir(generatedKotlinSrc)
+}
 
 tasks.processResources {
     dependsOn(tasks.fabriktGenerate)
