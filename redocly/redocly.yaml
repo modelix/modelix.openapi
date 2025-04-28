@@ -1,0 +1,14 @@
+plugins:
+  - redocly-plugins/plugin.js
+
+apis:
+  repository@v3:
+    root: ../specifications/repository/v3/repository.yaml
+    output: ./build/bundled/repository-v3.yaml
+    decorators:
+      plugin/use-server-path: {}
+  maven-connector@v1:
+    root: ../specifications/maven-connector/v1/maven.yaml
+    output: ./build/bundled/maven-connector-v1.yaml
+    decorators:
+      plugin/use-server-path: {}
