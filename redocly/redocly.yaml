@@ -2,9 +2,9 @@ plugins:
   - redocly-plugins/plugin.js
 
 apis:
-  lionweb@v2024.1:
-    root: ../specifications/lionweb/bulk/v2024.1/lionweb.yaml
-    output: ./build/bundled/lionweb-v2024.1.yaml
+  repository@v3:
+    root: ../specifications/repository/v3/repository.yaml
+    output: ./build/bundled/repository-v3.yaml
     decorators:
       plugin/use-server-path: {}
   workspaces@v1:
