@@ -1,0 +1,40 @@
+openapi: "3.0.3"
+info:
+  title: "Modelix Workspaces"
+  version: "3.0.0"
+servers:
+  - url: '/api/modelix/repository'
+    description: modelix-workspaces-manager
+tags:
+  - name: Repository
+paths:
+  /repositories/:
+    get:
+      operationId: listRepositories
+      tags: [Repository]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RepositoryList' }
+
+components:
+  schemas:
+    RepositoryList:
+      type: object
+      required: [repositories]
+      properties:
+        repositories: { type: array, items: { $ref: '#/components/schemas/Repository' } }
+    Repository:
+      type: object
+      required: [id]
+      properties:
+        id: { type: string }
+        alias: { type: array, items: { type: string } }
+    Branch:
+      type: object
+      required: [name, hash]
+      properties:
+        name: { type: string }
+        hash: { type: string }
