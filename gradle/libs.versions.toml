@@ -14,6 +14,6 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 gitVersion = { id = "com.palantir.git-version", version = "3.2.0" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-openapi-generator = {id = "org.openapi.generator", version = "7.12.0"}
+openapi-generator = {id = "org.openapi.generator", version = "7.13.0"}
 fabrikt = { id = "ch.acanda.gradle.fabrikt", version = "1.15.2" }
 node = {id = "com.github.node-gradle.node", version = "7.1.0"}
