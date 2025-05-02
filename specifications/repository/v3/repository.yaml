@@ -1,9 +1,9 @@
 openapi: "3.0.3"
 info:
-  title: "Modelix Workspaces"
+  title: "Modelix Model Repository"
   version: "3.0.0"
 servers:
-  - url: '/api/modelix/repository'
+  - url: '/modelix/repository'
     description: modelix-workspaces-manager
 tags:
   - name: Repository

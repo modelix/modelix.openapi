@@ -3,15 +3,17 @@ info:
   title: "Modelix Maven Connector"
   version: "1.0.0"
 servers:
-  - url: '/api/modelix/maven-connector'
+  - url: '/modelix/maven-connector'
     description: Makes artifacts from maven repositories available to other services
 tags:
   - name: MavenConnector
+  - name: MavenRepositories
+  - name: MavenArtifacts
 paths:
   /:
     get:
       operationId: getMavenConnectorConfig
-      tags: [MavenConnector]
+      tags: [MavenRepositories, MavenArtifacts]
       responses:
         "200":
           description: OK
@@ -22,6 +24,7 @@ paths:
   /repositories/:
     get:
       operationId: listMavenRepositories
+      tags: [MavenRepositories]
       responses:
         "200":
           description: OK
@@ -32,7 +35,7 @@ paths:
   /repositories/{repositoryId}:
     get:
       operationId: getMavenRepository
-      tags: [MavenConnector]
+      tags: [MavenRepositories]
       parameters:
         - name: repositoryId
           in: path
@@ -48,7 +51,7 @@ paths:
                 $ref: '#/components/schemas/MavenRepository'
     put:
       operationId: updateMavenRepository
-      tags: [MavenConnector]
+      tags: [MavenRepositories]
       parameters:
         - name: repositoryId
           in: path
@@ -65,7 +68,7 @@ paths:
           description: OK
     delete:
       operationId: deleteMavenRepository
-      tags: [MavenConnector]
+      tags: [MavenRepositories]
       parameters:
         - name: repositoryId
           in: path
@@ -78,7 +81,7 @@ paths:
   /artifacts/:
     get:
       operationId: listMavenArtifacts
-      tags: [MavenConnector]
+      tags: [MavenArtifacts]
       responses:
         "200":
           description: OK
@@ -86,6 +89,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MavenArtifactList'
+  /artifacts/{groupId}/{artifactId}:
+    get:
+      operationId: getMavenArtifact
+      tags: [MavenArtifacts]
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: artifactId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MavenArtifact'
+    put:
+      operationId: updateMavenArtifact
+      tags: [MavenArtifacts]
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: artifactId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MavenArtifact'
+      responses:
+        "200":
+          description: OK
+    delete:
+      operationId: deleteMavenArtifact
+      tags: [MavenArtifacts]
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: artifactId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+
 components:
   schemas:
     MavenConnectorConfig:
@@ -114,10 +179,8 @@ components:
       properties:
         id:
           type: string
-          nullable: false
         url:
           type: string
-          nullable: false
     MavenArtifactList:
       type: object
       required: [artifacts]

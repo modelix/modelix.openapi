@@ -40,6 +40,7 @@ fun registerNpmPackageTasks(
                     "npmRepository" to "https://artifacts.itemis.cloud/repository/npm-open/",
                     "npmVersion" to project.version.toString(),
                     "npmName" to "@modelix/$npmPackageName",
+                    "supportsES6" to "true",
                 )
             gitUserId = "modelix"
             gitRepoId = "modelix.openapi"
