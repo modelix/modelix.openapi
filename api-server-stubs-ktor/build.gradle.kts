@@ -30,6 +30,9 @@ fabrikt {
             suspendModifier = enabled
             completionStage = enabled
         }
+        typeOverrides {
+            uuid = String
+        }
     }
     generate("mavenConnector") {
         apiFile = rootProject.layout.projectDirectory.file("redocly/build/bundled/maven-connector-v1.yaml")
@@ -38,6 +41,10 @@ fabrikt {
     generate("repository") {
         apiFile = rootProject.layout.projectDirectory.file("redocly/build/bundled/repository-v3.yaml")
         basePackage = "org.modelix.services.repository.stubs"
+    }
+    generate("workspaces") {
+        apiFile = rootProject.layout.projectDirectory.file("redocly/build/bundled/workspaces-v1.yaml")
+        basePackage = "org.modelix.services.workspaces.stubs"
     }
 }
 

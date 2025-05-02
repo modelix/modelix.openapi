@@ -30,9 +30,9 @@ subprojects {
     apply(plugin = "maven-publish")
 
     repositories {
-        mavenLocal()
         maven { url = uri("https://artifacts.itemis.cloud/repository/maven-mps/") }
         mavenCentral()
+        mavenLocal()
     }
 
     publishing {

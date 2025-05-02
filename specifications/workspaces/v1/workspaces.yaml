@@ -1,0 +1,404 @@
+openapi: "3.1.0"
+info:
+  title: "Modelix Workspaces"
+  version: "1.0.0"
+servers:
+  - url: '/modelix/workspaces'
+    description: modelix-workspaces-manager
+tags:
+  - name: Workspaces
+  - name: Instances
+  - name: GitChangeDrafts
+paths:
+
+  /workspaces/:
+    get:
+      operationId: listWorkspaces
+      tags: [Workspaces]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceList' }
+
+  /workspaces/{workspaceId}:
+    get:
+      operationId: getWorkspace
+      tags: [Workspaces]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceConfig' }
+    put:
+      operationId: updateWorkspace
+      tags: [Workspaces]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceConfig'
+      responses:
+        '200':
+          description: OK
+    delete:
+      operationId: deleteWorkspace
+      tags: [Workspaces]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+
+  /tasks/{taskId}/config:
+    get:
+      operationId: getWorkspaceByTaskId
+      tags: [Workspaces]
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { type: object }
+
+  /tasks/{taskId}/context.tar.gz:
+    get:
+      operationId: getContextForTaskId
+      tags: [Workspaces]
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+
+  /drafts/:
+    get:
+      operationId: listDrafts
+      tags: [GitChangeDrafts]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GitChangeDraftList' }
+
+  /drafts/{draftId}/:
+    get:
+      operationId: getDraft
+      tags: [GitChangeDrafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GitChangeDraft' }
+
+  /instances/:
+    get:
+      operationId: listInstances
+      tags: [Instances]
+      parameters:
+        - name: workspaceId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceInstanceList' }
+    post:
+      operationId: createInstance
+      tags: [Instances]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceInstance'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceInstance' }
+
+  /instances/{instanceId}/:
+    get:
+      operationId: getInstance
+      tags: [Instances]
+      parameters:
+        - name: instanceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceInstance' }
+    delete:
+      operationId: deleteInstance
+      tags: [Instances]
+      parameters:
+        - name: instanceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+
+
+  /instances/{instanceId}/state:
+    get:
+      operationId: getInstanceState
+      tags: [Workspaces]
+      parameters:
+        - name: instanceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInstanceStateObject'
+    post:
+      operationId: changeInstanceState
+      tags: [Workspaces]
+      parameters:
+        - name: instanceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceInstanceStateObject'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInstanceStateObject'
+
+  /instances/{instanceId}/enabled:
+    put:
+      operationId: enableInstance
+      tags: [Instances]
+      parameters:
+        - name: instanceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceInstanceEnabled'
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas:
+
+    GitChangeDraftList:
+      type: object
+      required: [drafts]
+      properties:
+        drafts: { type: array, items: { $ref: '#/components/schemas/GitChangeDraft' } }
+
+    GitChangeDraft:
+      type: object
+      required: [id, description, owner, gitRepository, baseGitBranch, baseGitCommit, modelixBranch]
+      properties:
+        id: { type: string, format: uuid }
+        description: { type: string }
+        owner: { type: string }
+        gitRepository: { type: string }
+        baseGitBranch: { type: string }
+        baseGitCommit: { type: string }
+        modelixBranch: { $ref: '#/components/schemas/ModelixBranchRef' }
+
+    ModelixBranchRef:
+      type: object
+      required: [repositoryId, branchName]
+      properties:
+        repositoryId: { type: string }
+        branchName: { type: string }
+
+    WorkspaceList:
+      type: object
+      required: [workspaces]
+      properties:
+        workspaces: { type: array, items: { $ref: '#/components/schemas/WorkspaceConfig' } }
+
+    WorkspaceConfig:
+      type: object
+      required: [id, name, mpsVersion, memoryLimit, gitRepositories]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        mpsVersion: { type: string }
+        memoryLimit: { type: string }
+        gitRepositories:
+          type: array
+          items: { $ref: '#/components/schemas/GitRepository' }
+        mavenRepositories:
+          type: array
+          items: { $ref: '#/components/schemas/MavenRepository' }
+        mavenArtifacts:
+          type: array
+          items: { $ref: '#/components/schemas/MavenArtifact' }
+        buildConfig: { $ref: '#/components/schemas/WorkspaceBuildConfig' }
+        runConfig: { $ref: '#/components/schemas/WorkspaceRunConfig' }
+
+    MavenRepository:
+      type: object
+      required: [url]
+      properties:
+        url: { type: string }
+
+    MavenArtifact:
+      type: object
+      required: [groupId, artifactId]
+      properties:
+        groupId: { type: string }
+        artifactId: { type: string }
+        version: { type: string }
+
+    GitRepository:
+      type: object
+      required: [url]
+      properties:
+        url: { type: string }
+        credentials: { $ref: '#/components/schemas/GitCredentials' }
+
+    GitCredentials:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string }
+
+    WorkspaceInstanceList:
+      type: object
+      required: [instances]
+      properties:
+        instances: { type: array, items: { $ref: '#/components/schemas/WorkspaceInstance' } }
+
+    WorkspaceInstance:
+      type: object
+      required: [id, config, state, enabled]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        config: { $ref: '#/components/schemas/WorkspaceConfig' }
+        drafts: { type: array, items: { type: string, format: uuid } }
+        owner: { type: string }
+        enabled: { type: boolean }
+        state: { $ref: '#/components/schemas/WorkspaceInstanceState' }
+        readonly: { type: boolean }
+
+    WorkspaceInstanceState:
+      type: string
+      enum: [UNKNOWN, CREATED, DISABLED, WAITING_FOR_BUILD, BUILD_FAILED, LAUNCHING, RUNNING]
+
+    WorkspaceInstanceStateObject:
+      type: object
+      required: [state]
+      properties:
+        state: { $ref: '#/components/schemas/WorkspaceInstanceState' }
+
+    WorkspaceInstanceEnabled:
+      type: object
+      required: [enabled]
+      properties:
+        enabled: { type: boolean }
+
+    WorkspaceBuildConfig:
+      type: object
+      required: [ignoredModules, additionalGenerationDependencies]
+      properties:
+        ignoredModules: { type: array, items: { type: string } }
+        additionalGenerationDependencies:
+          type: array
+          items: { $ref: '#/components/schemas/GenerationDependency' }
+
+    GenerationDependency:
+      type: object
+      required: [from, to]
+      properties:
+        from: { type: string }
+        to: { type: string }
+
+    WorkspaceRunConfig:
+      type: object
+      required: [loadUsedModulesOnly, memoryLimit]
+      properties:
+        loadUsedModulesOnly: { type: boolean }
+        memoryLimit: { type: string }
+
+  securitySchemes:
+    modelixJwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - modelixJwtAuth: []

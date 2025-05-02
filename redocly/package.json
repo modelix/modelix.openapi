@@ -8,6 +8,7 @@
   },
   "scripts": {
     "bundle": "redocly bundle",
-    "join": "redocly join build/bundled/**/*.yaml --output=build/joined.yaml"
+    "join": "redocly join build/bundled/**/*.yaml --output=build/joined.yaml",
+    "bundle-and-join": "$npm_execpath run bundle && $npm_execpath run join"
   }
 }
