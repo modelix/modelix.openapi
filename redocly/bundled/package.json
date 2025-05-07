@@ -1,0 +1,25 @@
+{
+  "name": "@modelix/openapi-specifications",
+  "version": "0.0.1-SNAPSHOT.4",
+  "description": "OpenApi yaml files of the Modelix services",
+  "homepage": "https://modelix.org/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelix/modelix.openapi.git"
+  },
+  "license": "Apache 2.0",
+  "files": [
+    "./*.yaml"
+  ],
+  "scripts": {
+    "bundle": "redocly bundle",
+    "package": "npm pack",
+    "update-version": "npm version 0.0.1-SNAPSHOT.4"
+  },
+  "publishConfig": {
+    "registry": "https://artifacts.itemis.cloud/repository/npm-open/"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.34.2"
+  }
+}

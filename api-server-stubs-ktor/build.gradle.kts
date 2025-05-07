@@ -35,15 +35,15 @@ fabrikt {
         }
     }
     generate("mavenConnector") {
-        apiFile = rootProject.layout.projectDirectory.file("redocly/build/bundled/maven-connector-v1.yaml")
+        apiFile = rootProject.layout.projectDirectory.file("redocly/bundled/maven-connector-v1.yaml")
         basePackage = "org.modelix.services.maven_connector.stubs"
     }
     generate("repository") {
-        apiFile = rootProject.layout.projectDirectory.file("redocly/build/bundled/repository-v3.yaml")
+        apiFile = rootProject.layout.projectDirectory.file("redocly/bundled/repository-v3.yaml")
         basePackage = "org.modelix.services.repository.stubs"
     }
     generate("workspaces") {
-        apiFile = rootProject.layout.projectDirectory.file("redocly/build/bundled/workspaces-v1.yaml")
+        apiFile = rootProject.layout.projectDirectory.file("redocly/bundled/workspaces-v1.yaml")
         basePackage = "org.modelix.services.workspaces.stubs"
     }
 }
