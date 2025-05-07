@@ -16,9 +16,12 @@ fun computeVersion(): String {
         versionFile.readText().trim()
     } else {
         val gitVersion: groovy.lang.Closure<String> by extra
-        val version = gitVersion()
-        versionFile.writeText(version)
-        version
+        gitVersion()
+        .let {
+            // Normalize the version so that is always a valid NPM version.
+            if (it.matches("""\d+\.\d+.\d+-.*""".toRegex())) it else "0.0.1-$it"
+        }
+        .also { versionFile.writeText(it) }
     }
 }
 
