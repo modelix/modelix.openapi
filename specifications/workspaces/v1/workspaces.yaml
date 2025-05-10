@@ -21,6 +21,20 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/WorkspaceList' }
+    post:
+      operationId: createWorkspace
+      tags: [Workspaces]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceConfig'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceConfig' }
 
   /workspaces/{workspaceId}:
     get:
@@ -103,35 +117,6 @@ paths:
               schema:
                 type: string
                 format: binary
-
-  /drafts/:
-    get:
-      operationId: listDrafts
-      tags: [GitChangeDrafts]
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/GitChangeDraftList' }
-
-  /drafts/{draftId}/:
-    get:
-      operationId: getDraft
-      tags: [GitChangeDrafts]
-      parameters:
-        - name: draftId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/GitChangeDraft' }
 
   /instances/:
     get:
@@ -256,32 +241,6 @@ paths:
 
 components:
   schemas:
-
-    GitChangeDraftList:
-      type: object
-      required: [drafts]
-      properties:
-        drafts: { type: array, items: { $ref: '#/components/schemas/GitChangeDraft' } }
-
-    GitChangeDraft:
-      type: object
-      required: [id, description, owner, gitRepository, baseGitBranch, baseGitCommit, modelixBranch]
-      properties:
-        id: { type: string, format: uuid }
-        description: { type: string }
-        owner: { type: string }
-        gitRepository: { type: string }
-        baseGitBranch: { type: string }
-        baseGitCommit: { type: string }
-        modelixBranch: { $ref: '#/components/schemas/ModelixBranchRef' }
-
-    ModelixBranchRef:
-      type: object
-      required: [repositoryId, branchName]
-      properties:
-        repositoryId: { type: string }
-        branchName: { type: string }
-
     WorkspaceList:
       type: object
       required: [workspaces]
@@ -290,15 +249,13 @@ components:
 
     WorkspaceConfig:
       type: object
-      required: [id, name, mpsVersion, memoryLimit, gitRepositories]
+      required: [id, name, mpsVersion]
       properties:
         id: { type: string }
         name: { type: string }
         mpsVersion: { type: string }
         memoryLimit: { type: string }
-        gitRepositories:
-          type: array
-          items: { $ref: '#/components/schemas/GitRepository' }
+        gitRepositoryIds: { type: array, items: { type: string } }
         mavenRepositories:
           type: array
           items: { $ref: '#/components/schemas/MavenRepository' }

@@ -1,0 +1,328 @@
+openapi: "3.1.0"
+info:
+  title: "Modelix Git Connector"
+  version: "1.0.0"
+servers:
+  - url: '/modelix/git-connector'
+    description: Import MPS project from Git repositories
+tags:
+  - name: GitConnector
+  - name: GitRepositories
+  - name: GitBranches
+  - name: Drafts
+paths:
+  /repositories/:
+    get:
+      operationId: listGitRepositories
+      tags: [GitRepositories]
+      parameters:
+        - name: includeStatus
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRepositoryConfigList'
+    post:
+      operationId: createGitRepository
+      tags: [GitRepositories]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GitRepositoryConfig'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRepositoryConfig'
+
+  /repositories/{repositoryId}:
+    get:
+      operationId: getGitRepository
+      tags: [GitRepositories]
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: includeStatus
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRepositoryConfig'
+    put:
+      operationId: updateGitRepository
+      tags: [GitRepositories]
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GitRepositoryConfig'
+      responses:
+        "200":
+          description: OK
+    delete:
+      operationId: deleteGitRepository
+      tags: [GitRepositories]
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+
+  /repositories/{repositoryId}/status:
+    get:
+      operationId: getGitRepositoryStatus
+      tags: [GitRepositories, GitBranches]
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRepositoryStatusData'
+
+  /repositories/{repositoryId}/branches/:
+    get:
+      operationId: listBranches
+      tags: [GitBranches]
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitBranchList'
+
+  /repositories/{repositoryId}/branches/update:
+    post:
+      operationId: updateBranches
+      tags: [GitBranches]
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitBranchList'
+
+  /repositories/{repositoryId}/drafts/:
+    get:
+      operationId: listDraftsInRepository
+      tags: [Drafts]
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftConfigList'
+    post:
+      operationId: createDraftInRepository
+      tags: [Drafts]
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DraftConfig'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftConfig'
+
+  /drafts/{draftId}:
+    get:
+      operationId: getDraft
+      tags: [Drafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftConfig'
+    delete:
+      operationId: deleteDraft
+      tags: [Drafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+
+components:
+  schemas:
+    GitRepositoryConfigList:
+      type: object
+      required: [repositories]
+      properties:
+        repositories:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitRepositoryConfig'
+
+    GitRepositoryConfig:
+      type: object
+      required: [id, url]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        remotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitRemoteConfig'
+        modelixRepository:
+          type: string
+        status:
+          $ref: '#/components/schemas/GitRepositoryStatusData'
+
+    GitRemoteConfig:
+      type: object
+      required: [name, url, hasCredentials]
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        hasCredentials:
+          type: boolean
+        credentials:
+          $ref: '#/components/schemas/GitCredentials'
+
+    GitCredentials:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    GitRepositoryStatusData:
+      type: object
+      properties:
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitBranchStatusData'
+
+    GitBranchList:
+      type: object
+      required: [branches]
+      properties:
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitBranchStatusData'
+
+    GitBranchStatusData:
+      type: object
+      required: [remoteRepositoryName, name]
+      properties:
+        remoteRepositoryName: { type: string }
+        name: { type: string }
+        gitCommitHash: { type: string }
+        modelixBranchName: { type: string }
+        modelixCommitHash: { type: string }
+        lastImportedGitCommitHash: { type: string }
+
+    DraftConfigList:
+      type: object
+      required: [drafts]
+      properties:
+        drafts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DraftConfig'
+
+    DraftConfig:
+      type: object
+      required: [id, gitRepositoryId, modelixBranchName, gitBranchName, baseGitCommit]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        gitRepositoryId: { type: string }
+        gitBranchName: { type: string }
+        baseGitCommit: { type: string }
+        modelixBranchName: { type: string }
+        defaultWorkspace: { type: string }
+
+  securitySchemes:
+    modelixJwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - modelixJwtAuth: []
