@@ -36,7 +36,11 @@ fabrikt {
     }
     generate("mavenConnector") {
         apiFile = rootProject.layout.projectDirectory.file("redocly/bundled/maven-connector-v1.yaml")
-        basePackage = "org.modelix.services.maven_connector.stubs"
+        basePackage = "org.modelix.services.mavenconnector.stubs"
+    }
+    generate("gitConnector") {
+        apiFile = rootProject.layout.projectDirectory.file("redocly/bundled/git-connector-v1.yaml")
+        basePackage = "org.modelix.services.gitconnector.stubs"
     }
     generate("repository") {
         apiFile = rootProject.layout.projectDirectory.file("redocly/bundled/repository-v3.yaml")

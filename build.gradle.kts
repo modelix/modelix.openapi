@@ -17,6 +17,7 @@ fun computeVersion(): String {
     } else {
         val gitVersion: groovy.lang.Closure<String> by extra
         gitVersion()
+        .replace("""\.dirty$""".toRegex(), "-dirty")
         .let {
             // Normalize the version so that is always a valid NPM version.
             if (it.matches("""\d+\.\d+.\d+-.*""".toRegex())) it else "0.0.1-$it"

@@ -12,6 +12,11 @@ apis:
     output: ./bundled/maven-connector-v1.yaml
     decorators:
       plugin/use-server-path: {}
+  git-connector@v1:
+    root: ../specifications/git-connector/v1/git.yaml
+    output: ./bundled/git-connector-v1.yaml
+    decorators:
+      plugin/use-server-path: {}
   workspaces@v1:
     root: ../specifications/workspaces/v1/workspaces.yaml
     output: ./bundled/workspaces-v1.yaml
