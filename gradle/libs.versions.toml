@@ -11,7 +11,7 @@ ktor-server-data-conversion = { group = "io.ktor", name = "ktor-server-data-conv
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 
 [plugins]
-gitVersion = { id = "com.palantir.git-version", version = "3.4.0" }
+gitVersion = { id = "com.palantir.git-version", version = "4.0.0" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 openapi-generator = {id = "org.openapi.generator", version = "7.14.0"}
