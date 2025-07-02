@@ -218,6 +218,79 @@ paths:
       responses:
         "200":
           description: OK
+  /drafts/{draftId}/rebaseJob:
+    get:
+      operationId: getDraftRebaseJob
+      tags: [Drafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftRebaseJob'
+    post:
+      operationId: rebaseDraft
+      tags: [Drafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DraftRebaseJob'
+      responses:
+        "200":
+          description: OK
+
+  /drafts/{draftId}/preparationJob:
+    get:
+      operationId: getDraftBranchPreparationJob
+      tags: [Drafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftPreparationJob'
+    post:
+      operationId: prepareDraftBranch
+      tags: [Drafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DraftPreparationJob'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftPreparationJob'
 
 components:
   schemas:
@@ -317,6 +390,21 @@ components:
         baseGitCommit: { type: string }
         modelixBranchName: { type: string }
         defaultWorkspace: { type: string }
+
+    DraftRebaseJob:
+      type: object
+      required: [baseGitCommit]
+      properties:
+        baseGitCommit: { type: string }
+        gitBranchName: { type: string }
+        active: { type: boolean }
+        errorMessage: { type: string }
+
+    DraftPreparationJob:
+      type: object
+      properties:
+        active: { type: boolean }
+        errorMessage: { type: string }
 
   securitySchemes:
     modelixJwtAuth:
