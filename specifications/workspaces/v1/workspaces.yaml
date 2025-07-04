@@ -310,6 +310,7 @@ components:
         owner: { type: string }
         enabled: { type: boolean }
         state: { $ref: '#/components/schemas/WorkspaceInstanceState' }
+        statusText: { type: string }
         readonly: { type: boolean }
 
     WorkspaceInstanceState:
