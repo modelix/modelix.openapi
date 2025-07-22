@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "dependencies": {
-    "@redocly/cli": "^1.34.4"
+    "@redocly/cli": "^1.34.5"
   },
   "scripts": {
     "bundle": "redocly bundle"
