@@ -25,5 +25,5 @@ gitVersion = { id = "com.palantir.git-version", version = "4.0.0" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 openapi-generator = {id = "org.openapi.generator", version = "7.14.0"}
-fabrikt = { id = "ch.acanda.gradle.fabrikt", version = "1.19.0" }
+fabrikt = { id = "ch.acanda.gradle.fabrikt", version = "1.20.0" }
 node = {id = "com.github.node-gradle.node", version = "7.1.0"}
