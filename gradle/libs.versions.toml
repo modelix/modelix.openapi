@@ -21,7 +21,7 @@ ktor-serialization = { group = "io.ktor", name = "ktor-serialization", version.r
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 [plugins]
-gitVersion = { id = "com.palantir.git-version", version = "4.0.0" }
+gitVersion = { id = "com.palantir.git-version", version = "4.1.0" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 openapi-generator = {id = "org.openapi.generator", version = "7.16.0"}
