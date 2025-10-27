@@ -252,6 +252,44 @@ paths:
       responses:
         "200":
           description: OK
+  /drafts/{draftId}/exportJob:
+    get:
+      operationId: getDraftExportJob
+      tags: [Drafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftExportJob'
+    post:
+      operationId: exportDraft
+      tags: [Drafts]
+      parameters:
+        - name: draftId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DraftExportJob'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftExportJob'
 
   /drafts/{draftId}/preparationJob:
     get:
@@ -397,6 +435,14 @@ components:
       properties:
         baseGitCommit: { type: string }
         gitBranchName: { type: string }
+        active: { type: boolean }
+        errorMessage: { type: string }
+
+    DraftExportJob:
+      type: object
+      properties:
+        gitBranchName: { type: string }
+        modelixVersionHash: { type: string }
         active: { type: boolean }
         errorMessage: { type: string }
 
