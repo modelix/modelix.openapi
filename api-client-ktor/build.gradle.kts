@@ -40,6 +40,10 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
 }
 
+kotlin {
+    jvmToolchain(11)
+}
+
 tasks.compileKotlin {
     dependsOn(generatorTask)
 }
