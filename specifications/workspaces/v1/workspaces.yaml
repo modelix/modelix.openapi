@@ -8,6 +8,7 @@ servers:
 tags:
   - name: Workspaces
   - name: Instances
+  - name: Artifacts
   - name: GitChangeDrafts
 paths:
 
@@ -81,6 +82,147 @@ paths:
       responses:
         '200':
           description: OK
+
+  /workspaces/{workspaceId}/artifacts/:
+    get:
+      operationId: listArtifacts
+      summary: List the artifacts that were uploaded for a workspace, newest first.
+      tags: [Artifacts]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceArtifactList' }
+
+  /workspaces/{workspaceId}/artifacts/upload:
+    post:
+      operationId: uploadArtifact
+      summary: Upload the result of an external (CI) build of the workspace.
+      description: |
+        The request body is a ZIP file with the following layout:
+        - `modelix-artifact.json`: optional manifest (see WorkspaceArtifactManifest)
+        - `mps-projects/<name>/`: MPS projects that are opened in the workspace instance
+        - `mps-languages/`: additional modules that are available as a global library
+        - `mps-plugins/`: IDEA/MPS plugins (folders or ZIP files) that are installed before MPS starts
+
+        Requires the permission `workspaces/workspace/<id>/build-result/write`.
+      tags: [Artifacts]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/zip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceArtifact' }
+        '400':
+          description: The uploaded file is not a valid artifact.
+        '413':
+          description: The uploaded file is too large.
+
+  /workspaces/{workspaceId}/artifacts/{artifactId}:
+    get:
+      operationId: getArtifact
+      tags: [Artifacts]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: artifactId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkspaceArtifact' }
+    delete:
+      operationId: deleteArtifact
+      tags: [Artifacts]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: artifactId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+
+  /workspaces/{workspaceId}/artifacts/{artifactId}/content.zip:
+    get:
+      operationId: downloadArtifact
+      tags: [Artifacts]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: artifactId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+
+  /workspaces/{workspaceId}/artifact-upload-token:
+    post:
+      operationId: createArtifactUploadToken
+      summary: Create an access token that a CI pipeline can use to upload artifacts for this workspace.
+      tags: [Artifacts]
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtifactUploadTokenRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ArtifactUploadToken' }
 
   /tasks/{taskId}/config:
     get:
@@ -264,6 +406,15 @@ components:
           items: { $ref: '#/components/schemas/MavenArtifact' }
         buildConfig: { $ref: '#/components/schemas/WorkspaceBuildConfig' }
         runConfig: { $ref: '#/components/schemas/WorkspaceRunConfig' }
+        buildMode: { $ref: '#/components/schemas/WorkspaceBuildMode' }
+
+    WorkspaceBuildMode:
+      type: string
+      description: |
+        IN_CLUSTER: The workspace is built inside the cluster from the configured git repositories and maven artifacts.
+        EXTERNAL: The workspace is built by an external CI pipeline that uploads the result as an artifact.
+        If not specified, IN_CLUSTER is used.
+      enum: [IN_CLUSTER, EXTERNAL]
 
     MavenRepository:
       type: object
@@ -323,6 +474,12 @@ components:
         state: { $ref: '#/components/schemas/WorkspaceInstanceState' }
         statusText: { type: string }
         readonly: { type: boolean }
+        artifactId:
+          type: string
+          description: |
+            Only used if the build mode of the workspace is EXTERNAL.
+            Runs this specific artifact. If not specified, the artifact that was built from the base commit of the
+            draft is used, or the newest artifact if there is no draft.
 
     WorkspaceInstanceState:
       type: string
@@ -362,6 +519,64 @@ components:
       properties:
         loadUsedModulesOnly: { type: boolean }
         memoryLimit: { type: string }
+
+    WorkspaceArtifactList:
+      type: object
+      required: [artifacts]
+      properties:
+        artifacts: { type: array, items: { $ref: '#/components/schemas/WorkspaceArtifact' } }
+
+    WorkspaceArtifact:
+      type: object
+      required: [id, workspaceId, createdAt, sizeBytes, sha256]
+      properties:
+        id: { type: string }
+        workspaceId: { type: string }
+        createdAt:
+          type: string
+          description: ISO-8601 timestamp of the upload
+        sizeBytes:
+          type: integer
+          format: int64
+        sha256: { type: string }
+        uploadedBy: { type: string }
+        mpsVersion: { type: string }
+        gitCommit: { type: string }
+        gitBranch: { type: string }
+        label: { type: string }
+
+    WorkspaceArtifactManifest:
+      type: object
+      description: Content of the file `modelix-artifact.json` inside an uploaded artifact.
+      required: [formatVersion]
+      properties:
+        formatVersion:
+          type: integer
+          description: Currently always 1.
+        mpsVersion:
+          type: string
+          description: Major MPS version (e.g. 2024.1) the artifact was built with. Overrides the MPS version of the workspace.
+        gitCommit: { type: string }
+        gitBranch: { type: string }
+        label:
+          type: string
+          description: Free text, e.g. a version number or build number of the CI pipeline.
+
+    ArtifactUploadTokenRequest:
+      type: object
+      properties:
+        validityDays:
+          type: integer
+          description: Number of days the token is valid. Defaults to 90.
+
+    ArtifactUploadToken:
+      type: object
+      required: [token, expiresAt]
+      properties:
+        token: { type: string }
+        expiresAt:
+          type: string
+          description: ISO-8601 timestamp
 
   securitySchemes:
     modelixJwtAuth:
