@@ -21,12 +21,7 @@ val generatorTask = tasks.register("generateKtorClient", GenerateTask::class) {
     inputSpec = project(":redocly")
         .layout.projectDirectory
         .file("bundled/git-connector-v1.yaml")
-        .asFile.absolutePath
-    outputDir =
-        layout.buildDirectory
-            .dir("generated/ktor")
-            .get()
-            .asFile.absolutePath
+    outputDir = layout.buildDirectory.dir("generated/ktor")
     //importMappings.put("UUID", "kotlin.uuid.Uuid")
 }
 

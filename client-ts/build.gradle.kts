@@ -33,8 +33,6 @@ fun registerNpmPackageTasks(
                 project(":redocly")
                     .layout.buildDirectory
                     .file("joined.yaml")
-                    .get()
-                    .asFile.absolutePath
             configOptions =
                 mapOf(
                     "npmRepository" to "https://artifacts.itemis.cloud/repository/npm-open/",
@@ -45,11 +43,7 @@ fun registerNpmPackageTasks(
             gitUserId = "modelix"
             gitRepoId = "modelix.openapi"
             generatorName = openApiGeneratorName
-            outputDir =
-                layout.buildDirectory
-                    .dir("generate/$openApiGeneratorName")
-                    .get()
-                    .asFile.absolutePath
+            outputDir = clientBuildDir
         }
 
     // Task to run 'pnpm install'
