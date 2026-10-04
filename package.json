@@ -13,7 +13,7 @@
     "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.5",
     "globals": "^17.3.0",
-    "typescript-eslint": "^8.36.0"
+    "typescript-eslint": "^8.71.0"
   },
   "dependencies": {
     "@stoplight/spectral-cli": "^6.15.0"
